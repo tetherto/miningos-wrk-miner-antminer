@@ -12,8 +12,6 @@ const DigestStrategy = require('passport-http').DigestStrategy
 
 const MockControlAgent = require('./mock-control-agent')
 
-const DEFAULT_MOCK_CONTROL_PORT = 9999
-
 /**
  * Creates a mock control agent
  * @param things
@@ -23,7 +21,7 @@ const DEFAULT_MOCK_CONTROL_PORT = 9999
 const createMockControlAgent = (things, mockControlPort) => {
   return new MockControlAgent({
     thgs: things,
-    port: mockControlPort || DEFAULT_MOCK_CONTROL_PORT
+    port: mockControlPort
   })
 }
 
@@ -112,9 +110,9 @@ function runServer (argv, ops = {}) {
   }
   const STATE = {}
 
-  const MINER_TYPES = ['S19xp', 'S19xp_h', 'S21', 'S21pro']
+  const MINER_TYPES = ['s19xp', 's19xp_h', 's21', 's21pro']
 
-  if (!MINER_TYPES.includes(CTX.type)) {
+  if (!MINER_TYPES.includes(CTX.type.toLowerCase())) {
     throw Error('ERR_UNSUPPORTED')
   }
 
