@@ -3,13 +3,15 @@
 const { getDefaultConf, testExecutor } = require('miningos-tpl-wrk-miner/tests/miner.test')
 const Miner = require('../workers/lib/miner')
 const srv = require('../mock/server')
+const crypto = require('crypto')
 
 let mockServer
 
 const conf = getDefaultConf()
 if (!conf.settings.live) {
   conf.settings.host = '127.0.0.1'
-  mockServer = srv.createServer({ host: conf.settings.host, port: conf.settings.port, type: 'S19xp' })
+  conf.settings.password = crypto.randomBytes(5).toString('base64').replace(/[^a-z0-9]/gi, '').slice(0, 5)
+  mockServer = srv.createServer({ host: conf.settings.host, port: conf.settings.port, type: 'S19xp', password: conf.settings.password })
 }
 
 const miner = new Miner({

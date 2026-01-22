@@ -1,6 +1,6 @@
 # miningos-wrk-miner-antminer
 
-A Node.js-based worker service for managing and monitoring Bitmain Antminer cryptocurrency mining devices. This implementation provides comprehensive control over multiple Antminer models including S19 XP, S19 XP Hydro, S21, and S21 Pro, with support for monitoring, configuration, and remote management.
+A worker service for managing and monitoring Bitmain Antminer cryptocurrency mining devices. This implementation provides comprehensive control over multiple Antminer models including S19 XP, S19 XP Hydro, S21, and S21 Pro, with support for monitoring, configuration, and remote management.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ This worker extends the abstract miner worker framework to provide specific func
 
 ## Object Model
 
-The following is a fragment of [MiningOS object model](https://docs.mos.tether.io/) that contains the concrete classes representing **Antminer miners workers** (highlighted in blue), one generically representing any model of the brand, and four children specifically representing models **S19 XP**, **S19 XP Hydro**, **S21**, and **S21 Pro**. The rounded nodes reprsent abstract classes and the square nodes represents a concrete classes:
+The following is a fragment of [MiningOS object model](https://docs.mos.tether.io/) that contains the concrete classes representing **Antminer miners workers** (highlighted in blue), one generically representing any model of the brand, and child classes specifically representing models **S19 XP**, **S19 XP Hydro**, **S21**, and **S21 Pro**. The rounded nodes reprsent abstract classes and the square nodes represents a concrete classes:
 
 ```mermaid
 ---
@@ -76,10 +76,10 @@ Check out [miningos-tpl-wrk-miner](https://github.com/tetherto/miningos-tpl-wrk-
 
 ## Supported Models
 
-- **[Antminer S19 XP](https://shop.bitmain.com/product/detail?pid=00020230112174741027ww6zyrL306F4)** - Air-cooled model
-- **[Antminer S19 XP Hydro](https://shop.bitmain.com/product/detail?pid=00020250113141218969c3x71dcB0676)** - Liquid-cooled model with power monitoring
-- **[Antminer S21](https://shop.bitmain.com/product/detail?pid=00020240402210032893O1Et7keX0682)** - Latest generation with power monitoring
-- **[Antminer S21 Pro](https://shop.bitmain.com/product/detail?pid=00020240402210032893O1Et7keX0682)** - High-performance variant with power monitoring
+- **Antminer S19 XP** - Air-cooled model
+- **Antminer S19 XP Hydro** - Liquid-cooled model with power monitoring
+- **Antminer S21** - Latest generation with power monitoring
+- **Antminer S21 Pro** - High-performance variant with power monitoring
 
 ## Features
 
@@ -102,19 +102,8 @@ Check out [miningos-tpl-wrk-miner](https://github.com/tetherto/miningos-tpl-wrk-
 - Monitor hashboard status
 - Track share statistics
 
-### Soon-to-be Supported Operation
-- Update firmware
-
 ## Requirements
 - Node.js (>= 20.0)
-- Network access to Antminer devices (default port: 80)
-- Secondary port access for error monitoring (default: 6060)
-- Dependencies:
-  - `bfx-svc-boot-js`
-  - `miningos-tpl-wrk-miner`
-  - `digest-fetch` (for authentication)
-  - `async`
-  - `fastify` (for mock server)
 
 ## Installation
 
@@ -179,7 +168,13 @@ Each model has configurable alerts with severity levels (critical, high, medium)
 ### Starting the Worker
 
 ```bash
-node worker.js --wtype=wrk-miner-rack-s19xp --env=production --rack=rack01
+node worker.js --wtype=wrk-miner-rack-s19xp --env=production --rack=rack1
+
+node worker.js --wtype=wrk-miner-rack-s19xp_h --env=production --rack=rack2
+
+node worker.js --wtype=wrk-miner-rack-s21 --env=production --rack=rack3
+
+node worker.js --wtype=wrk-miner-rack-s21pro --env=production --rack=rack4
 ```
 
 Replace `s19xp` with your specific model: `s19xp_h`, `s21`, or `s21pro`.
@@ -242,13 +237,7 @@ Control miners through the `queryThing` RPC method:
   "params": {
     "id": "miner-id",
     "method": "setPools",
-    "params": [[
-      {
-        "url": "stratum+tcp://pool.example.com:3333",
-        "worker_name": "worker1",
-        "worker_password": "x"
-      }
-    ]]
+    "params": []
   }
 }
 
@@ -337,7 +326,10 @@ Example: Position "1_2_3" in container-05 → 10.5.1.23
 A mock server is provided for testing without physical hardware:
 
 ```bash
-node mock/server.js --type S19xp --port 8000 --host 127.0.0.1
+node mock/server.js --type S19xp --port 8000
+node mock/server.js --type S19xp_h --port 8001
+node mock/server.js --type S21 --port 8002
+node mock/server.js --type S21pro --port 8003
 ```
 
 The mock server provides:
@@ -438,15 +430,3 @@ Power consumption data is available on specific models via port 6060:
 
 ### Network Configuration
 The worker supports both static and DHCP network configuration. For S21/S21Pro models, static IPs can be calculated based on container position.
-
-## Intro
-
-Generic: https://github.com/tetherto/miningos-tpl-wrk-thing/blob/main/README.md#intro
-
-## Setup
-
-Generic: https://github.com/tetherto/miningos-tpl-wrk-thing/blob/main/README.md#setup
-
-## Configuration
-
-Generic: https://github.com/tetherto/miningos-tpl-wrk-thing/blob/main/README.md#configuration
