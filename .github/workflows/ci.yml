@@ -145,6 +145,8 @@ jobs:
     needs: setup
     permissions:
       contents: read
+    outputs:
+      coverage_result: ${{ steps.coverage-summary.outputs.coverage_result }}
 
     steps:
       - name: Checkout repository
@@ -168,10 +170,46 @@ jobs:
           fi
 
       - name: Run tests with coverage
-        continue-on-error: true
+        id: run-tests
         run: |
           echo "Running tests with coverage..."
-          npm run test:coverage --if-present || npm test --if-present || echo "::warning::Tests failed but continuing workflow"
+          npm run test:coverage --if-present || npm test --if-present || echo "::warning::No test:coverage or test script; skipping"
+
+      - name: Coverage (threshold + summary)
+        id: coverage-summary
+        if: always()
+        run: |
+          MIN=80
+          # Vitest: detect by config (handles its own thresholds); brittle uses Istanbul + nyc check.
+          if [ -f vitest.config.js ] || [ -f vitest.config.ts ]; then
+            if [ -f coverage/coverage-final.json ]; then
+              if [ "${{ steps.run-tests.outcome }}" = "success" ]; then
+                STATUS_CELL="✅ PASS"
+              else
+                STATUS_CELL="❌ FAIL (coverage below threshold in vitest.config.js)"
+              fi
+              echo "coverage_result=$STATUS_CELL Vitest (thresholds in vitest.config.js)" >> "$GITHUB_OUTPUT"
+            else
+              echo "coverage_result=⚠️ No coverage report" >> "$GITHUB_OUTPUT"
+            fi
+          elif [ -f coverage/coverage-final.json ]; then
+            mkdir -p .nyc_output
+            cp coverage/coverage-final.json .nyc_output/out.json
+            set +e
+            echo "Running nyc check-coverage (threshold ${MIN}%)..."
+            npx --yes nyc check-coverage --lines=$MIN --statements=$MIN --functions=$MIN --branches=$MIN
+            EXIT=$?
+            set -e
+            echo "Running nyc report (text-summary)..."
+            npx --yes nyc report --reporter=text-summary 2>&1 | tee report-summary.txt
+            PCT=$(sed -n 's/^Lines[^:]*: *\([0-9.]*\)%.*/\1/p' report-summary.txt)
+            [ -z "$PCT" ] && PCT="—"
+            [ $EXIT -eq 0 ] && ICON="✅" || ICON="❌"
+            echo "coverage_result=$ICON Coverage ${PCT}% (min ${MIN}%)" >> "$GITHUB_OUTPUT"
+            exit $EXIT
+          else
+            echo "coverage_result=⚠️ No coverage report" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Run build (optional)
         continue-on-error: true
@@ -265,6 +303,7 @@ jobs:
           R_SUPPLY: ${{ needs.supply-chain.result || 'skipped' }}
           R_LINT: ${{ needs.lint.result || 'skipped' }}
           R_TEST: ${{ needs.test-and-sonarqube.result || 'skipped' }}
+          COVERAGE: ${{ needs.test-and-sonarqube.outputs.coverage_result || '—' }}
         run: |
           {
             echo "## 📊 CI Pipeline Summary"
@@ -280,6 +319,7 @@ jobs:
             [ "${R_SUPPLY}" != "skipped" ] && echo "- 🔐 Supply Chain: ${R_SUPPLY:-?}"
             [ "${R_LINT}" != "skipped" ] && echo "- ✨ Lint: ${R_LINT:-?}"
             [ "${R_TEST}" != "skipped" ] && echo "- 🧪 Test & SonarQube: ${R_TEST:-?}"
+            echo "- 📊 Coverage: ${COVERAGE}"
             echo ""
             echo "### 🔧 Pipeline"
             echo "- ✅ Dependency review (PR only)"
