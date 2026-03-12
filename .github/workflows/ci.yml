@@ -201,11 +201,15 @@ jobs:
             EXIT=$?
             set -e
             echo "Running nyc report (text-summary)..."
-            npx --yes nyc report --reporter=text-summary 2>&1 | tee report-summary.txt
-            PCT=$(sed -n 's/^Lines[^:]*: *\([0-9.]*\)%.*/\1/p' report-summary.txt)
-            [ -z "$PCT" ] && PCT="—"
+            NYC_REPORT=$(npx --yes nyc report --reporter=text-summary 2>&1)
+            echo "$NYC_REPORT"
+            STMT=$(echo "$NYC_REPORT"  | sed -n 's/^Statements[^:]*: *\([0-9.]*\)%.*/\1/p')
+            BRANCH=$(echo "$NYC_REPORT" | sed -n 's/^Branches[^:]*: *\([0-9.]*\)%.*/\1/p')
+            FN=$(echo "$NYC_REPORT"    | sed -n 's/^Functions[^:]*: *\([0-9.]*\)%.*/\1/p')
+            LINES=$(echo "$NYC_REPORT" | sed -n 's/^Lines[^:]*: *\([0-9.]*\)%.*/\1/p')
+            [ -z "$STMT" ] && STMT="—"; [ -z "$BRANCH" ] && BRANCH="—"; [ -z "$FN" ] && FN="—"; [ -z "$LINES" ] && LINES="—"
             [ $EXIT -eq 0 ] && ICON="✅" || ICON="❌"
-            echo "coverage_result=$ICON Coverage ${PCT}% (min ${MIN}%)" >> "$GITHUB_OUTPUT"
+            echo "coverage_result=$ICON Stmt ${STMT}% | Branch ${BRANCH}% | Fn ${FN}% | Lines ${LINES}% (min ${MIN}%)" >> "$GITHUB_OUTPUT"
             exit $EXIT
           else
             echo "coverage_result=⚠️ No coverage report" >> "$GITHUB_OUTPUT"
