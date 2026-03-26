@@ -1,6 +1,6 @@
 {
-  "name": "miningos-wrk-miner-antminer",
-  "version": "0.0.1",
+  "name": "@tetherto/miningos-wrk-miner-antminer",
+  "version": "1.0.0",
   "description": "MiningOS Worker Miner Antminer",
   "keywords": [
     "tether"
@@ -11,8 +11,22 @@
     "type": "git",
     "url": "git+https://github.com/tetherto/miningos-wrk-miner-antminer.git"
   },
-  "engine": {
-    "node": ">=20.0"
+  "homepage": "https://github.com/tetherto/miningos-wrk-miner-antminer#readme",
+  "bugs": {
+    "url": "https://github.com/tetherto/miningos-wrk-miner-antminer/issues"
+  },  
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "worker.js",
+    "workers/",
+    "mock/"
+  ],
+  "main": "worker.js",  
+  "type": "commonjs",
+  "bin": {
+    "miningos-wrk-miner-antminer": "worker.js"
   },
   "scripts": {
     "lint": "standard",
@@ -31,11 +45,10 @@
   "devDependencies": {
     "@bitfinex/lib-js-util-base": "git+https://github.com/bitfinexcom/lib-js-util-base.git",
     "@bitfinex/lib-js-util-promise": "git+https://github.com/bitfinexcom/lib-js-util-promise.git",
-    "@fastify/passport": "2.5.0",
-    "@fastify/secure-session": "7.3.0",
+    "@fastify/passport": "3.0.2",
+    "@fastify/secure-session": "8.3.0",
     "brittle": "3.16.3",
     "debug": "4.4.1",
-    "fastify": "4.29.1",
     "miningos-mock-control-service": "git+https://github.com/tetherto/miningos-mock-control-service.git",
     "passport-http": "0.3.0",
     "standard": "17.1.2",
