@@ -109,6 +109,23 @@ jobs:
         with:
           persist-credentials: false
 
+      # Private cross-repo git dependencies (now that miningos-* repos are
+      # private) cannot be cloned with the repo-scoped GITHUB_TOKEN. Mint a
+      # short-lived token from the miningos-read GitHub App and configure git
+      # to use it before any npm install resolves those dependencies.
+      - name: Generate miningos-read app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Configure git auth for private dependencies
+        uses: ./.github/actions/setup-git-credentials
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
       - name: Setup runtime
         uses: ./.github/actions/setup-runtime
         with:
