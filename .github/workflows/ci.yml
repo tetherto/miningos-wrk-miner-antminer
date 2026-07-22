@@ -44,6 +44,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -173,6 +175,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -196,6 +200,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -219,6 +225,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -296,6 +304,8 @@ jobs:
         if: steps.build-gate.outputs.build-ran == 'true'
         uses: ./.github/actions/node-restore-cache
         with:
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
