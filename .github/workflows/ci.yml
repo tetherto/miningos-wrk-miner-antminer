@@ -44,8 +44,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
-          app-id: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
-          private-key: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
+          app-id: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
+          private-key: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -117,15 +117,15 @@ jobs:
       # to use it before any npm install resolves those dependencies.
       - name: Generate miningos-read app token
         id: app-token
-        if: ${{ vars.ENABLE_APP_TOKEN == '1' }}
+        if: ${{ vars.ENABLE_APP_TOKEN != '' }}
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
-          private-key: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
+          app-id: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
+          private-key: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
           owner: ${{ github.repository_owner }}
 
       - name: Configure git auth for private dependencies
-        if: ${{ vars.ENABLE_APP_TOKEN == '1' }}
+        if: ${{ vars.ENABLE_APP_TOKEN != '' }}
         uses: ./.github/actions/setup-git-credentials
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -175,8 +175,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
-          app-id: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
-          private-key: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
+          app-id: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
+          private-key: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -199,8 +199,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
-          app-id: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
-          private-key: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
+          app-id: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
+          private-key: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -223,8 +223,8 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
-          app-id: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
-          private-key: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
+          app-id: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
+          private-key: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
@@ -301,8 +301,8 @@ jobs:
         if: steps.build-gate.outputs.build-ran == 'true'
         uses: ./.github/actions/node-restore-cache
         with:
-          app-id: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
-          private-key: ${{ vars.ENABLE_APP_TOKEN == '1' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
+          app-id: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_CLIENT_ID || '' }}
+          private-key: ${{ vars.ENABLE_APP_TOKEN != '' && secrets.MININGOS_READ_APP_PRIVATE_KEY || '' }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
           node-version: ${{ env.NODE_VERSION }}
 
