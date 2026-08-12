@@ -44,6 +44,7 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          enabled: ${{ vars.ENABLE_APP_TOKEN != '' }}
           app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
           private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
@@ -115,18 +116,12 @@ jobs:
       # private) cannot be cloned with the repo-scoped GITHUB_TOKEN. Mint a
       # short-lived token from the miningos-read GitHub App and configure git
       # to use it before any npm install resolves those dependencies.
-      - name: Generate miningos-read app token
-        id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
-          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-
       - name: Configure git auth for private dependencies
         uses: ./.github/actions/setup-git-credentials
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          enabled: ${{ vars.ENABLE_APP_TOKEN != '' }}
+          app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
+          private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
 
       - name: Setup runtime
         uses: ./.github/actions/setup-runtime
@@ -173,6 +168,7 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          enabled: ${{ vars.ENABLE_APP_TOKEN != '' }}
           app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
           private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
@@ -197,6 +193,7 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          enabled: ${{ vars.ENABLE_APP_TOKEN != '' }}
           app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
           private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
@@ -221,6 +218,7 @@ jobs:
       - name: Restore dependencies
         uses: ./.github/actions/node-restore-cache
         with:
+          enabled: ${{ vars.ENABLE_APP_TOKEN != '' }}
           app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
           private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
@@ -299,6 +297,7 @@ jobs:
         if: steps.build-gate.outputs.build-ran == 'true'
         uses: ./.github/actions/node-restore-cache
         with:
+          enabled: ${{ vars.ENABLE_APP_TOKEN != '' }}
           app-id: ${{ secrets.MININGOS_READ_APP_CLIENT_ID }}
           private-key: ${{ secrets.MININGOS_READ_APP_PRIVATE_KEY }}
           cache-key: ${{ needs.setup.outputs.cache-key }}
