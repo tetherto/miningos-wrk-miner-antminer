@@ -153,6 +153,8 @@ Check out [miningos-tpl-wrk-miner](https://github.com/tetherto/miningos-tpl-wrk-
 }
 ```
 
+**`miner.overwriteCredsWithDefault`** (optional): object with `username` and `password` (both required). When set, these credentials are used for every miner connection, overriding per-miner `opts.username` / `opts.password`. Nothing is written to the device or to the stored thing opts — remove the flag and per-miner credentials apply again. A partial object (only one field) is ignored and logged.
+
 ### Model-Specific Alerts
 
 Each model has configurable alerts with severity levels (critical, high, medium):

@@ -32,12 +32,15 @@ class WrkMinerRack extends WrkRack {
   }
 
   async _connectThing (thg, type) {
-    if (!thg.opts.address || !thg.opts.port || !thg.opts.username || !thg.opts.password) {
+    const { username, password } = this._getThingCredentials(thg)
+    if (!thg.opts.address || !thg.opts.port || !username || !password) {
       return 0
     }
 
     const miner = new Miner({
       ...thg.opts,
+      username,
+      password,
       conf: this.conf.thing.miner || {},
       id: thg.id,
       type,

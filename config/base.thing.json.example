@@ -398,6 +398,10 @@
   },
   "miner": {
     "timeout": 60000,
+    "overwriteCredsWithDefault": {
+      "username": "MINER_USERNAME",
+      "password": "MINER_PASSWORD"
+    },
     "pools": [
       {
         "url": "POOL_URL",
