@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: "lts/*"
+  NODE_VERSION: "24.x"
 
 jobs:
   security_checks:
